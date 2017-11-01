@@ -2,7 +2,7 @@
 language: nodejs
 default_versions:
 - name: opencv
-  version: 3.3.1
+  version: 2.4
 - name: node
   version: 4.8.5
 include_files:
@@ -96,10 +96,10 @@ dependencies:
   - cflinuxfs2
 - cf_stacks:
   - cflinuxfs2
-  md5: eb269dee073ce42979bcf90443980258
+  md5: f82e4abb08502f44704abff75348f7cd
   name: opencv
-  uri: http://opencv-buildpack.s3-website-us-east-1.amazonaws.com/blobs/opencv/opencv-compiled-3.3.0.tgz
-  version: 3.3.0
+  uri: http://ubiquitous.csf.itesm.mx/~Solar/opencv-compiled-2.4.9.tgz
+  version: 2.4
 - cf_stacks:
   - cflinuxfs2
   md5: 15076e163f3e8d57d5f4c6b0931e2321
