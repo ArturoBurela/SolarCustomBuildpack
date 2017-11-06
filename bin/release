@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/release <build-dir>
-ldconfig
+pwd
 echo 'default_process_types:'
 
 if [[ "${OPTIMIZE_MEMORY:-}" = "true" ]]; then
