@@ -11,3 +11,13 @@ echo "export DEPS_DIR=\$HOME/.cloudfoundry" > "$BUILD_DIR/.profile.d/0000_set-de
 
 $BUILDPACK_DIR/bin/supply "$BUILD_DIR" "$CACHE_DIR" "$DEPS_DIR" 0
 $BUILDPACK_DIR/bin/finalize "$BUILD_DIR" "$CACHE_DIR" "$DEPS_DIR" 0
+
+# Add SOX binary and libraries to path
+status "Adding SOX library support"
+tar xzf $bp_dir/vendor/opencv-compiled-2.4.9 -C $build_dir/vendor/
+
+# Update the PATH
+status "Building runtime environment"
+mkdir -p $build_dir/.profile.d
+echo "export PATH=\"\$HOME/vendor/node/bin:\$HOME/bin:\$HOME/node_modules/.bin:\$HOME/vendor/:\$PATH\";" > $build_dir/.profile.d/nodejs.sh
+echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/libs/\";" >> $build_dir/.profile.d/nodejs.sh
