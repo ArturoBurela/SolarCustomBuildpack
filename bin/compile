@@ -14,11 +14,11 @@ $BUILDPACK_DIR/bin/finalize "$BUILD_DIR" "$CACHE_DIR" "$DEPS_DIR" 0
 
 # Add OPENCV binary and libraries to path
 # status "Adding SOX library support"
-mkdir -p $BUILD_DIR/vendor
-curl http://ubiquitous.csf.itesm.mx/~Solar/opencv-compiled-2.4.9.tgz | tar xzf -C $BUILD_DIR/vendor/
+#mkdir -p $BUILD_DIR/vendor
+#curl http://ubiquitous.csf.itesm.mx/~Solar/opencv-compiled-2.4.9.tgz | tar xzf -C $BUILD_DIR/vendor/
 
 # Update the PATH
 # status "Building runtime environment"
 #mkdir -p $BUILD_DIR/.profile.d
-echo "export PATH=\"\$HOME/vendor/node/bin:\$HOME/bin:\$HOME/node_modules/.bin:\$HOME/vendor/:\$PATH\";" > $BUILD_DIR/.profile.d/nodejs.sh
-echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/libs/\";" >> $BUILD_DIR/.profile.d/nodejs.sh
+#echo "export PATH=\"\$HOME/vendor/node/bin:\$HOME/bin:\$HOME/node_modules/.bin:\$HOME/vendor/:\$PATH\";" > $BUILD_DIR/.profile.d/nodejs.sh
+#echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/libs/\";" >> $BUILD_DIR/.profile.d/nodejs.sh
