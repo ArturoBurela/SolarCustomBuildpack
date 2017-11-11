@@ -1,0 +1,140 @@
+---
+meta:
+  name: opencv
+  target:  sw
+  url:     https://ci.starkandwayne.com
+
+  initial_version: 0.2.0
+
+  git:
+    email:  ci@starkandwayne.com
+    name:   "CI Bot"
+
+  buildpack-compile-image:
+    name: cloudfoundry/cflinuxfs2
+    tag: latest
+
+  cf:
+    api_url:         (( vault "secret/bosh-lites/lite49/cf:api_url" ))
+    admin_username:  admin
+    admin_password:  (( vault "secret/bosh-lites/lite49/cf:admin_password" ))
+    organization:    system
+    space:           dev
+
+  aws:
+    access_key: (( vault "secret/aws/cfcommunity:access" ))
+    secret_key: (( vault "secret/aws/cfcommunity:secret" ))
+
+  github:
+    owner:  cloudfoundry-community
+    branch: master
+    private_key:  (( vault "secret/pipelines/shared/github:private_key" ))
+    access_token: (( vault "secret/pipelines/shared/github:access_token" ))
+
+  slack:
+    webhook: (( vault "secret/pipelines/" meta.pipeline "/slack:webhook" ))
+    channel:       '#opencv'
+    username:      starkandwayne-ci
+    icon:          https://www.starkandwayne.com/assets/images/shield-blue-50x50.png
+    blob_success:  '(( concat "$BUILD_PIPELINE_NAME: New version of $BUILD_JOB_NAME was detected, and updated in master. <" meta.url "/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME| Cut a new release?>" ))'
+    blob_build_failure:  '(( concat "$BUILD_PIPELINE_NAME: :airplane_arriving: <" meta.url "/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME| Failed to build the blob for $BUILD_JOB_NAME>" ))'
+
+groups:
+- name: blobs
+  jobs:
+  - opencv
+
+jobs:
+- name: opencv
+  public: true
+  plan:
+  - aggregate:
+    - { get: git }
+    - { get: opencv, trigger: true, params: { include_source_zip: true, globs: ["skip"] }}
+  - task: build-opencv
+    config:
+      image_resource:
+        type: docker-image
+        source:
+          repository: (( grab meta.buildpack-compile-image.name ))
+          tag:        (( grab meta.buildpack-compile-image.tag ))
+      platform: linux
+      inputs:
+      - name: git
+      - name: opencv
+      outputs:
+      - name: blobs
+      run:
+        path: ./git/packages/opencv/compile.sh
+      params:
+        SRC_DIR:      opencv
+        OUTPUT_DIR:   blobs
+        VERSION_FROM: opencv/version
+        INSTALL_LINUX_PKG: 1
+    on_failure:
+      put: notify
+      params:
+        channel:  (( grab meta.slack.channel ))
+        username: (( grab meta.slack.username ))
+        icon_url: (( grab meta.slack.icon ))
+        text:     (( grab meta.slack.blob_build_failure ))
+  - task: update-manifest
+    config:
+      image_resource:
+        type: docker-image
+        source:
+          repository: (( grab meta.image.name ))
+          tag:        (( grab meta.image.tag ))
+      platform: linux
+      inputs:
+      - name: git
+      - name: opencv
+      - name: blobs
+      outputs:
+      - name: pushme
+      run:
+        path: ./git/packages/opencv/update_manifest.sh
+      params:
+        NAME:         opencv
+        VERSION_FROM: opencv/version
+        REPO_ROOT:      git
+        REPO_OUT:       pushme
+        BLOB_NAME:      opencv
+        BLOB:           blobs/opencv-compiled-*.tgz
+        DOWNLOAD_ROOT_URL: (( concat "http://" meta.aws.bucket ".s3-website-" meta.aws.region_name ".amazonaws.com" ))
+        GIT_EMAIL:      (( grab meta.git.email ))
+        GIT_NAME:       (( grab meta.git.name ))
+  - name: upload-git
+    put: git
+    params:
+      rebase: true
+      repository: pushme
+  - put: opencv-blob
+    params:
+      file: blobs/opencv-compiled-*.tgz
+      acl: public-read
+
+    on_success:
+      put: notify
+      params:
+        channel:  (( grab meta.slack.channel ))
+        username: (( grab meta.slack.username ))
+        icon_url: (( grab meta.slack.icon ))
+        text:     (( grab meta.slack.blob_success ))
+
+resources:
+  - name: opencv
+    type: github-release
+    source:
+      user:         opencv
+      repository:   opencv
+      access_token: (( grab meta.github.access_token ))
+
+  - name: opencv-blob
+    type: s3
+    source:
+      regexp: blobs/opencv/opencv-compiled-(.*).tgz
+      bucket: (( grab meta.aws.bucket ))
+      region: (( grab meta.aws.region_name ))
+      access_key_id: (( grab meta.aws.access_key ))
+      secret_access_key: (( grab meta.aws.secret_key ))
