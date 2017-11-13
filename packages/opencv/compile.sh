@@ -17,7 +17,7 @@ OUTPUT_DIR=$PWD/${OUTPUT_DIR}
 TMP_SRC_DIR=$PWD/${TMP_SRC_DIR}
 TMP_BUILD_DIR=$PWD/${TMP_BUILD_DIR}
 
-if [[ "${SKIP_INSTALL_LINUX_PKG:-X}" == "X" ]]; then
+#if [[ "${SKIP_INSTALL_LINUX_PKG:-X}" == "X" ]]; then
   apt-get update
   apt-get install -y build-essential cmake \
       git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev \
@@ -28,7 +28,7 @@ if [[ "${SKIP_INSTALL_LINUX_PKG:-X}" == "X" ]]; then
   echo "deb http://apt.starkandwayne.com stable main" | tee /etc/apt/sources.list.d/starkandwayne.list
   apt-get update
   apt-get install -y spruce
-fi
+#fi
 
 mkdir -p $TMP_SRC_DIR
 cd $TMP_SRC_DIR
