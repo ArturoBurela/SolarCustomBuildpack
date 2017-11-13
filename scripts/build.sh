@@ -7,8 +7,7 @@ BINDIR=$ROOTDIR/bin
 export GOPATH=$ROOTDIR
 export GOOS=linux
 
-apt-get install build-essential
-apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-
 go build -ldflags="-s -w" -o $BINDIR/supply nodejs/supply/cli
 go build -ldflags="-s -w" -o $BINDIR/finalize nodejs/finalize/cli
+
+locate libgtk-x11-2.0.so.0
