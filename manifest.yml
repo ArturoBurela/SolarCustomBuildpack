@@ -96,7 +96,7 @@ dependencies:
   - cflinuxfs2
 - cf_stacks:
   - cflinuxfs2
-  md5: f82e4abb08502f44704abff75348f7cd
+  md5: 72c75bbd2410100944b8ebc72024c2c3
   name: opencv
   uri: http://ubiquitous.csf.itesm.mx/~Solar/opencv-compiled-2.4.9.tgz
   version: 2.4
