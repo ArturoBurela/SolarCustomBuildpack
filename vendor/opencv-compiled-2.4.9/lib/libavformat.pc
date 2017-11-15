@@ -1,0 +1,14 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=/usr/lib/x86_64-linux-gnu
+includedir=/usr/include/x86_64-linux-gnu
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 57.56.101
+Requires: 
+Requires.private: libavcodec >= 57.64.101, libswresample >= 2.3.100, libavutil >= 55.34.101
+Conflicts:
+Libs: -L${libdir}  -lavformat 
+Libs.private: -ldl -ldl -ldl -lXv -lX11 -lXext -ldl -ldl -lvdpau -lva -lva-drm -lva -lva-x11 -lva -lxcb -lxcb-shm -lxcb-xfixes -lxcb-shape -lX11 -lcdio_paranoia -lcdio_cdda -lcdio -lsndio -ljack -lasound -lSDL2 -ldc1394 -lGL -lopenal -lzvbi -lzmq -lxvidcore -lx265 -lx264 -lwebpmux -lwebp -lwebp -lwavpack -lvpx -lm -lvpx -lm -lvpx -lm -lvpx -lm -lvorbisenc -lvorbis -logg -ltwolame -ltwolame -ltheoraenc -ltheoradec -logg -lspeex -lssh -lsoxr -lsnappy -lm -lshine -lrubberband -lpulse -lopus -lopenmpt -lopenjp2 -lopencv_core -lopencv_imgproc -lmp3lame -lgsm -lgme -lstdc++ -lfribidi -lfreetype -lfontconfig -lfreetype -lflite_cmu_time_awb -lflite_cmu_us_awb -lflite_cmu_us_kal -lflite_cmu_us_kal16 -lflite_cmu_us_rms -lflite_cmu_us_slt -lflite_usenglish -lflite_cmulex -lflite -lebur128 -lcaca -lbs2b -lbluray -lass -lraw1394 -lavc1394 -lrom1394 -liec61883 -lgnutls -lchromaprint -ldl -lcrystalhd -lm -llzma -lbz2 -lz -pthread
+Cflags: -I${includedir}
